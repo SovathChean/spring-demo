@@ -9,26 +9,21 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import lombok.Data;
 
 @Entity
-@Table(name = "users")
 @Data
-public class UserModel {
+@Table(name="products")
+public class ProductModel {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
-    private String username;
-    private GenderEnum gender;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime dob;
+    private String productName;
+    private String productCode;
+    private Integer qty;
     private Integer createdBy;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
     private Integer updatedBy;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
 	public Integer getId() {
 		return id;
@@ -36,11 +31,23 @@ public class UserModel {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public String getUsername() {
-		return username;
+	public String getProductName() {
+		return productName;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+	public String getProductCode() {
+		return productCode;
+	}
+	public void setProductCode(String productCode) {
+		this.productCode = productCode;
+	}
+	public Integer getQty() {
+		return qty;
+	}
+	public void setQty(Integer qty) {
+		this.qty = qty;
 	}
 	public Integer getCreatedBy() {
 		return createdBy;
@@ -60,19 +67,6 @@ public class UserModel {
 	public void setUpdatedBy(Integer updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	public GenderEnum getGender() {
-		return gender;
-	}
-	public void setGender(GenderEnum gender) {
-		this.gender = gender;
-	}
-	public LocalDateTime getDob() {
-		return dob;
-	}
-	public void setDob(LocalDateTime dob) {
-		this.dob = dob;
-	}
-
 	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
@@ -80,5 +74,5 @@ public class UserModel {
 		this.updatedAt = updatedAt;
 	}
 
-
+    
 }

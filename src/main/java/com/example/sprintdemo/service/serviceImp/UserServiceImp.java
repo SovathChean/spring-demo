@@ -1,7 +1,7 @@
 package com.example.sprintdemo.service.serviceImp;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,30 +20,26 @@ public class UserServiceImp implements UserService{
 	@Autowired
 	public UserModelValidator userModelValidator;
 	@Override
-	public List<UserModel> getList()
+	public List<UserDto> getList()
 	{
-		var user = userDao.findAll();
-		return user;
+		var users = userDao.findAll();
+		return users.stream().map(user -> new UserDto(user)).collect(Collectors.toList());
 	}
 	@Override
-	public UserModel save(UserModel user) {
-		userModelValidator.validate(user);
-		return this.userDao.save(user);
+	public UserDto save(UserDto userDto) {
+		userModelValidator.validate(userDto);
+		UserModel user = this.dtoToEntity(userDto);
+	    userDao.save(user);
+		return new UserDto(user);
 	}
 	@Override
-	public UserModel findUserById(Integer userId) {
-		return userDao.findUserById(userId);
+	public UserDto findUserById(Integer userId) {
+		UserModel user =  userDao.findUserById(userId).orElseThrow(() -> new com.example.sprintdemo.exception.ResourceNotFoundException(userId));
+		return new UserDto(user);
 	}
     private UserModel dtoToEntity(UserDto userDto) {
         UserModel user = new UserModel();
         BeanUtils.copyProperties(userDto, user);
         return user;
-    }
-    
-    private List<UserDto> dtoToListEntity(List<UserModel> listUserDto)
-    {
-    	List<UserDto> listUser = new ArrayList<UserDto>();
-        BeanUtils.copyProperties(listUserDto, listUser);
-        return listUser;
     }
 }
