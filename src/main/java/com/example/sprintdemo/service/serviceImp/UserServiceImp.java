@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.sprintdemo.dao.UserDao;
@@ -14,22 +15,24 @@ import com.example.sprintdemo.validation.UserModelValidator;
 
 @Service
 public class UserServiceImp implements UserService{
-	
-	public UserDao userDao;   
+	@Autowired
+	public UserDao userDao;  
+	@Autowired
 	public UserModelValidator userModelValidator;
 	@Override
 	public List<UserModel> getList()
 	{
-		return this.userDao.findAll();
+		var user = userDao.findAll();
+		return user;
 	}
 	@Override
 	public UserModel save(UserModel user) {
-		this.userModelValidator.validate(user);
+		userModelValidator.validate(user);
 		return this.userDao.save(user);
 	}
 	@Override
 	public UserModel findUserById(Integer userId) {
-		return this.userDao.findUserById(userId);
+		return userDao.findUserById(userId);
 	}
     private UserModel dtoToEntity(UserDto userDto) {
         UserModel user = new UserModel();
