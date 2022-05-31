@@ -1,28 +1,16 @@
 package com.example.sprintdemo.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import com.example.sprintdemo.dto.UserDto;
 import com.example.sprintdemo.model.UserModel;
-import com.example.sprintdemo.repository.UserRepository;
 
 import java.util.List;
 
-@Service
-public class UserService {
-    
-    @Autowired
-	private UserRepository userRepo;
 
-	public UserModel save(UserModel student) {
-		return userRepo.save(student);
-	}
+public interface UserService {
+ 
+	UserModel save(UserModel user);
 
-	public UserModel findUserById(Integer studentId) {
-		return userRepo.findUserById(studentId);
-	}
+	UserModel findUserById(Integer userId);
 
-	public List<UserModel> getList() {
-		return userRepo.findAll();
-	}
+	List<UserModel> getList();
 }
