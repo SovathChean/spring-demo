@@ -3,6 +3,8 @@ package com.example.sprintdemo.controller;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.time.LocalDateTime;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,19 +19,21 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.example.sprintdemo.SprintDemoApplication;
 import com.example.sprintdemo.controller.helper.HttpHelper;
-import com.example.sprintdemo.dto.ProductDto;
+import com.example.sprintdemo.dto.UserDto;
+import com.example.sprintdemo.model.GenderEnum;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SprintDemoApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class RegisterController {
-    private static final String BASIC_URL = "http://localhost:%s/products";
+    private static final String BASIC_URL = "http://localhost:%s/register";
 
     private static final Integer ID = 1;
 
-    private static final String ProductName = "ProductName";
-    private static final String ProductCode = "ProductCode";
-    private static final Integer ProductQty = 100;
-    private static final Integer ProductCreatedBy = 1;
+    private static final String Username = "ProductName";
+    private static final GenderEnum Gender = GenderEnum.Male;
+    private static final LocalDateTime dob = LocalDateTime.now();
+    private static final Integer CreateBy = 1;
 
     
     @Autowired
@@ -39,46 +43,32 @@ public class RegisterController {
     private int port;
     
     @Test
-    public void should_save_product() {
+    public void should_register() {
         //Given
         String url = String.format(BASIC_URL, port);
         System.out.println(url);
-        ProductDto createRequest = givenCreateRequest();
-        HttpEntity<ProductDto> request = HttpHelper.getHttpEntity(createRequest);
+        UserDto createRequest = givenCreateRequest();
+        HttpEntity<UserDto> request = HttpHelper.getHttpEntity(createRequest);
         //When
-        ResponseEntity<ProductDto> response = testRestTemplate.exchange(url, HttpMethod.POST, request, ProductDto.class);
+        ResponseEntity<UserDto> response = testRestTemplate.exchange(url, HttpMethod.POST, request, UserDto.class);
         //Then
         System.out.println(response);
         assertEquals(response.getStatusCode(), HttpStatus.OK);
         assertNotNull(response.getBody());
-        assertEquals(response.getBody().getProductName(), ProductName);
-        assertEquals(response.getBody().getProductCode(), ProductCode);
-        assertEquals(response.getBody().getQty(), ProductQty);
-        assertEquals(response.getBody().getCreatedBy(), ProductCreatedBy);
+        assertEquals(response.getBody().getUsername(), Username);
+        assertEquals(response.getBody().getGender(), Gender);
+        assertEquals(response.getBody().getDob(), dob);
+        assertEquals(response.getBody().getCreatedBy(), CreateBy);
     }
 
-    private ProductDto givenCreateRequest() {
-		ProductDto createRequest = new ProductDto();
-        createRequest.setProductCode(ProductCode);
-        createRequest.setProductName(ProductCode);
-        createRequest.setQty(ProductQty);
-        createRequest.setCreatedBy(ProductCreatedBy);
+    private UserDto givenCreateRequest() {
+    	UserDto createRequest = new UserDto();
+        createRequest.setUsername(Username);
+        createRequest.setGender(Gender);
+        createRequest.setDob(dob);
+        createRequest.setCreatedBy(CreateBy);
         return createRequest;
 
 	}
-	@Test
-    public void should_update_product() {
-        //Given
-        String url = String.format(BASIC_URL, port);
-        System.out.println(url);
-        ProductDto createRequest = givenCreateRequest();
-        HttpEntity<ProductDto> request = HttpHelper.getHttpEntity(createRequest);
-        //When
-        ResponseEntity<ProductDto> response = testRestTemplate.exchange(url, HttpMethod.POST, request, ProductDto.class);
-        //Then
-        System.out.println(response.getStatusCode());
-        assertEquals(response.getStatusCode(), HttpStatus.OK);
-        assertNotNull(response.getBody());
-        assertEquals(ID, response.getBody().getId());
-    }
+
 }

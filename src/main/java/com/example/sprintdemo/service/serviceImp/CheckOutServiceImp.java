@@ -3,6 +3,8 @@ package com.example.sprintdemo.service.serviceImp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,18 +33,32 @@ public class CheckOutServiceImp implements CheckOutService{
 	public CheckOutModelValidator checkoutValidator;
 	@Override
 	public CheckOutDto save(CheckOutDto ckDto) {
+		Session session = null;  
+		Transaction tx = null;  
 		CheckOutModel ckModel = this.dtoToEntity(ckDto);
 		List<ProductModel> productlList = new ArrayList<>();
-		ckModel.getProducts().forEach(ckProduct -> {
-			ProductModel product = productDao.findProductById(ckProduct.getProductId()).orElseThrow(() -> new ResourceNotFoundException(ckProduct.getProductId()));
-			Integer deductQty = product.getQty() - ckProduct.getQty();
-			if(deductQty < 0)
-				throw new ProductOutOfStock(product.getProductName());
-			product.setQty(deductQty);
-			productlList.add(product);
-		});
-		productDao.saveAll(productlList);
-		checkoutDao.save(ckModel);
+
+        try
+        {
+        	tx = session.beginTransaction();  
+			ckModel.getProducts().forEach(ckProduct -> {
+				ProductModel product = productDao.findProductById(ckProduct.getProductId()).orElseThrow(() -> new ResourceNotFoundException(ckProduct.getProductId()));
+				Integer deductQty = product.getQty() - ckProduct.getQty();
+				if(deductQty < 0)
+					throw new ProductOutOfStock(product.getProductName());
+				product.setQty(deductQty);
+				productlList.add(product);
+			});
+			productDao.saveAll(productlList);
+			checkoutDao.save(ckModel);
+			tx.commit();
+        }
+        catch(Exception e)
+        {
+        	tx.rollback();
+        	throw e;
+        }
+	
 		return new CheckOutDto(ckModel);
 	}
 
