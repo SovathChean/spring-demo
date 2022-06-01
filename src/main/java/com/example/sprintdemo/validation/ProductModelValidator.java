@@ -10,7 +10,7 @@ import com.example.sprintdemo.utility.validation.CommonValidatorUtils;
 
 @Component
 public class ProductModelValidator implements BaseValidator<ProductDto> {
-	  private final CommonValidatorUtils commonValidatorUtils ;
+	    private final CommonValidatorUtils commonValidatorUtils ;
 
 	    @Autowired
 	    public ProductModelValidator(
