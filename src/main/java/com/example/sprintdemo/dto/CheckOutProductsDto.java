@@ -9,7 +9,14 @@ public class CheckOutProductsDto {
 	  private Integer id;
 	  private Integer checkoutId;
 	  private Integer productId;
-	  public CheckOutProductsDto(CheckOutProducts ckProducts) {
+	  private Integer qty;
+	  public Integer getQty() {
+		return qty;
+	}
+	public void setQty(Integer qty) {
+		this.qty = qty;
+	}
+	public CheckOutProductsDto(CheckOutProducts ckProducts) {
 	        BeanUtils.copyProperties(ckProducts, this, "checkoutId");
 
 	        CheckOutModel ckModel = ckProducts.getCheckout();

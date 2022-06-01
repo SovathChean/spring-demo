@@ -20,7 +20,17 @@ public class CheckOutProducts {
     private Integer id;
     @Column(name="product_id")
     private Integer productId;
-    public Integer getProductId() {
+    private Integer qty;
+    
+    public Integer getQty() {
+		return qty;
+	}
+
+	public void setQty(Integer qty) {
+		this.qty = qty;
+	}
+
+	public Integer getProductId() {
 		return productId;
 	}
 

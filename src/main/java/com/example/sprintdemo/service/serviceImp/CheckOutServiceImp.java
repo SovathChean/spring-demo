@@ -8,13 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.sprintdemo.dao.CheckOutDao;
+import com.example.sprintdemo.dao.ProductDao;
 import com.example.sprintdemo.dto.CheckOutDto;
 import com.example.sprintdemo.dto.CheckOutProductsDto;
+import com.example.sprintdemo.exception.ProductOutOfStock;
+import com.example.sprintdemo.exception.ResourceNotFoundException;
 import com.example.sprintdemo.model.CheckOutModel;
 import com.example.sprintdemo.model.CheckOutProducts;
+import com.example.sprintdemo.model.ProductModel;
 import com.example.sprintdemo.service.CheckOutService;
 import com.example.sprintdemo.validation.CheckOutModelValidator;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 
 @Service
 public class CheckOutServiceImp implements CheckOutService{
@@ -22,10 +26,22 @@ public class CheckOutServiceImp implements CheckOutService{
 	@Autowired
 	public CheckOutDao checkoutDao;
 	@Autowired
+	public ProductDao productDao;
+	@Autowired
 	public CheckOutModelValidator checkoutValidator;
 	@Override
 	public CheckOutDto save(CheckOutDto ckDto) {
 		CheckOutModel ckModel = this.dtoToEntity(ckDto);
+		List<ProductModel> productlList = new ArrayList<>();
+		ckModel.getProducts().forEach(ckProduct -> {
+			ProductModel product = productDao.findProductById(ckProduct.getProductId()).orElseThrow(() -> new ResourceNotFoundException(ckProduct.getProductId()));
+			Integer deductQty = product.getQty() - ckProduct.getQty();
+			if(deductQty < 0)
+				throw new ProductOutOfStock(product.getProductName());
+			product.setQty(deductQty);
+			productlList.add(product);
+		});
+		productDao.saveAll(productlList);
 		checkoutDao.save(ckModel);
 		return new CheckOutDto(ckModel);
 	}
