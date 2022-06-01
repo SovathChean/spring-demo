@@ -3,7 +3,10 @@ package com.example.sprintdemo.service.serviceImp;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +33,13 @@ public class CheckOutServiceImp implements CheckOutService{
 	@Autowired
 	public ProductDao productDao;
 	@Autowired
+	private SessionFactory sessionFactory;
+	@Autowired
 	public CheckOutModelValidator checkoutValidator;
 	@Override
+	@Transactional
 	public CheckOutDto save(CheckOutDto ckDto) {
-		Session session = null;  
+		Session session = sessionFactory.openSession();
 		Transaction tx = null;  
 		CheckOutModel ckModel = this.dtoToEntity(ckDto);
 		List<ProductModel> productlList = new ArrayList<>();
@@ -55,14 +61,16 @@ public class CheckOutServiceImp implements CheckOutService{
         }
         catch(Exception e)
         {
-        	tx.rollback();
+        	if (tx != null) {
+        	    tx.rollback();
+        	}
         	throw e;
         }
 	
 		return new CheckOutDto(ckModel);
 	}
 
-    private CheckOutModel dtoToEntity(CheckOutDto ckDto) {
+	private CheckOutModel dtoToEntity(CheckOutDto ckDto) {
     	CheckOutModel ckOut = new CheckOutModel();
         List<CheckOutProducts> ckOutProduct = new ArrayList<>();
 

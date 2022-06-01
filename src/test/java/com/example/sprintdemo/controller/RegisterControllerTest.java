@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
@@ -24,15 +25,12 @@ import com.example.sprintdemo.model.GenderEnum;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = SprintDemoApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class RegisterController {
+@SpringBootTest(classes = SprintDemoApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class RegisterControllerTest{
     private static final String BASIC_URL = "http://localhost:%s/register";
-
-    private static final Integer ID = 1;
 
     private static final String Username = "ProductName";
     private static final GenderEnum Gender = GenderEnum.Male;
-    private static final LocalDateTime dob = LocalDateTime.now();
     private static final Integer CreateBy = 1;
 
     
@@ -57,7 +55,6 @@ public class RegisterController {
         assertNotNull(response.getBody());
         assertEquals(response.getBody().getUsername(), Username);
         assertEquals(response.getBody().getGender(), Gender);
-        assertEquals(response.getBody().getDob(), dob);
         assertEquals(response.getBody().getCreatedBy(), CreateBy);
     }
 
@@ -65,7 +62,6 @@ public class RegisterController {
     	UserDto createRequest = new UserDto();
         createRequest.setUsername(Username);
         createRequest.setGender(Gender);
-        createRequest.setDob(dob);
         createRequest.setCreatedBy(CreateBy);
         return createRequest;
 

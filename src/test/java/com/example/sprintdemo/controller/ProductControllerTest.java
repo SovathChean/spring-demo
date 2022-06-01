@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
@@ -20,7 +21,7 @@ import com.example.sprintdemo.controller.helper.HttpHelper;
 import com.example.sprintdemo.dto.ProductDto;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = SprintDemoApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = SprintDemoApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ProductControllerTest {
     private static final String BASIC_URL = "http://localhost:%s/products";
 
@@ -60,7 +61,7 @@ public class ProductControllerTest {
     private ProductDto givenCreateRequest() {
 		ProductDto createRequest = new ProductDto();
         createRequest.setProductCode(ProductCode);
-        createRequest.setProductName(ProductCode);
+        createRequest.setProductName(ProductName);
         createRequest.setQty(ProductQty);
         createRequest.setCreatedBy(ProductCreatedBy);
         return createRequest;

@@ -20,7 +20,6 @@ public class UserModelValidator implements BaseValidator<UserDto> {
 		public void validate(UserDto obj) {
 			  this.commonValidatorUtils.validateRequiredField("username", obj.getUsername());
 			  this.commonValidatorUtils.validateRequiredField("gender", obj.getGender());
-			  this.commonValidatorUtils.validateRequiredField("dob", obj.getDob());
 			  this.commonValidatorUtils.validateRequiredField("createdBy", obj.getCreatedBy());
 	
  	 }
